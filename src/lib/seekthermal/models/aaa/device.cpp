@@ -203,6 +203,8 @@ void SeekThermal::AAA::Device::doCapture(Frame& frame) {
     frame.setType(Frame::typeUnknown);
   
   unsigned short* raw = reinterpret_cast<unsigned short*>(&data[0]);
+
+  frame.setTemperature(raw[1]);
   
   for (size_t i = 0; i < size; ++i) {
     size_t x = i%width;

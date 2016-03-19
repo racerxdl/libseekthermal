@@ -77,6 +77,16 @@ namespace SeekThermal {
       */
     virtual ~Frame();
     
+    /** \brief Access the device's temperature
+      */
+    inline float getTemperature() const {
+      return temperature;
+    };
+
+    inline void setTemperature(const float t) {
+      temperature = t;
+    };
+    
     /** \brief Access the frame's width
       */
     inline size_t getWidth() const {
@@ -248,6 +258,7 @@ namespace SeekThermal {
   protected:
     size_t width;
     size_t height;
+    float temperature;
     
     Type type;
     std::vector<float> data;
