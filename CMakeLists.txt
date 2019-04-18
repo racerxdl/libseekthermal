@@ -65,7 +65,7 @@ remake_distribute_deb(
   SECTION libs
   UPLOAD ppa:kralf/asl
   DEPENDS libboost-chrono1.48-dev libudev-dev libusb-1.0-0-dev
-    libpng12-dev libqt4-dev remake doxygen pkg-config
+    libpng12-dev qt5-default remake doxygen pkg-config
   PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
 )
 remake_distribute_deb(
@@ -73,6 +73,6 @@ remake_distribute_deb(
   SECTION libs
   UPLOAD ppa:kralf/asl
   DEPENDS libboost-chrono-dev libudev-dev libusb-1.0-0-dev
-    libpng12-dev libqt4-dev remake doxygen pkg-config
+    libpng12-dev qt5-default remake doxygen pkg-config
   PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
 )
