@@ -33,10 +33,24 @@ remake_doc(
 remake_pack_deb(
   DEPENDS libudev0|libudev1 libusb-1.0-0 libboost-chrono[0-9.]*
 )
+
+find_program(LSB_RELEASE_EXEC lsb_release)
+execute_process(COMMAND ${LSB_RELEASE_EXEC} -cs
+    OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if (${LSB_RELEASE_ID_SHORT} STREQUAL "bionic")
+  set(PNG_PACKAGE "libpng16-16")
+  set(PNG_DEV_PACKAGE "libpng-dev")
+else(${LSB_RELEASE_ID_SHORT} STREQUAL "bionic")
+  set(PNG_PACKAGE "libpng12-0")
+  set(PNG_DEV_PACKAGE "libpng12-dev")
+endif(${LSB_RELEASE_ID_SHORT} STREQUAL "bionic")
+
 remake_pack_deb(
   COMPONENT utils
   DESCRIPTION "utilities"
-  DEPENDS libseekthermal libpng12-0
+  DEPENDS libseekthermal ${PNG_PACKAGE}
 )
 remake_pack_deb(
   COMPONENT gui
@@ -59,7 +73,6 @@ remake_pack_deb(
   COMPONENT doc
   DESCRIPTION "documentation"
 )
-
 remake_distribute_deb(
   DISTRIBUTION precise
   SECTION libs
@@ -74,5 +87,13 @@ remake_distribute_deb(
   UPLOAD ppa:kralf/asl
   DEPENDS libboost-chrono-dev libudev-dev libusb-1.0-0-dev
     libpng12-dev libqt4-dev remake doxygen pkg-config
+  PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
+)
+remake_distribute_deb(
+  DISTRIBUTION bionic
+  SECTION libs
+  UPLOAD ppa:kralf/asl
+  DEPENDS libboost-chrono-dev libudev-dev libusb-1.0-0-dev
+    libpng-dev libqt4-dev remake doxygen pkg-config
   PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
 )
