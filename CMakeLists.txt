@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ReMake)
 
+if($ENV{ROS_DISTRO} STREQUAL "kinetic" )
+add_definitions(-DKINETIC)
+endif()
+
 remake_project(
   libseekthermal
   VERSION 0.1

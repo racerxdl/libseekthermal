@@ -35,6 +35,10 @@
 
 #include <seekthermal/usb/context.h>
 
+#ifndef KINETIC
+#include <math.h>
+#endif
+
 using namespace SeekThermal;
 
 void signaled(int signal) {
