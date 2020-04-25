@@ -31,49 +31,49 @@ remake_doc(
   html
 )
 
-remake_pack_deb(
-  DEPENDS libudev0|libudev1 libusb-1.0-0 libboost-chrono[0-9.]*
-)
-remake_pack_deb(
-  COMPONENT utils
-  DESCRIPTION "utilities"
-  DEPENDS libseekthermal libpng12-0
-)
-remake_pack_deb(
-  COMPONENT gui
-  DESCRIPTION "GUI"
-  DEPENDS libseekthermal libqtgui4
-)
-remake_pack_deb(
-  COMPONENT dev
-  DESCRIPTION "development headers"
-  DEPENDS libseekthermal
-)
-remake_pack_deb(
-  COMPONENT udev
-  DESCRIPTION "udev rules"
-  DEPENDS udev
-  EXTRA debian/rules/*
-)
-remake_pack_deb(
-  ARCH all
-  COMPONENT doc
-  DESCRIPTION "documentation"
-)
-
-remake_distribute_deb(
-  DISTRIBUTION precise
-  SECTION libs
-  UPLOAD ppa:kralf/asl
-  DEPENDS libboost-chrono1.48-dev libudev-dev libusb-1.0-0-dev
-    libpng12-dev qt5-default remake doxygen pkg-config
-  PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
-)
-remake_distribute_deb(
-  DISTRIBUTION trusty
-  SECTION libs
-  UPLOAD ppa:kralf/asl
-  DEPENDS libboost-chrono-dev libudev-dev libusb-1.0-0-dev
-    libpng12-dev qt5-default remake doxygen pkg-config
-  PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
-)
+#remake_pack_deb(
+#  DEPENDS libudev0|libudev1 libusb-1.0-0 libboost-chrono[0-9.]*
+#)
+#remake_pack_deb(
+#  COMPONENT utils
+#  DESCRIPTION "utilities"
+#  DEPENDS libseekthermal libpng12-0
+#)
+#remake_pack_deb(
+#  COMPONENT gui
+#  DESCRIPTION "GUI"
+#  DEPENDS libseekthermal libqtgui4
+#)
+#remake_pack_deb(
+#  COMPONENT dev
+#  DESCRIPTION "development headers"
+#  DEPENDS libseekthermal
+#)
+#remake_pack_deb(
+#  COMPONENT udev
+#  DESCRIPTION "udev rules"
+#  DEPENDS udev
+#  EXTRA debian/rules/*
+#)
+#remake_pack_deb(
+#  ARCH all
+#  COMPONENT doc
+#  DESCRIPTION "documentation"
+#)
+#
+#remake_distribute_deb(
+#  DISTRIBUTION precise
+#  SECTION libs
+#  UPLOAD ppa:kralf/asl
+#  DEPENDS libboost-chrono1.48-dev libudev-dev libusb-1.0-0-dev
+#    libpng12-dev qt5-default remake doxygen pkg-config
+#  PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
+#)
+#remake_distribute_deb(
+#  DISTRIBUTION trusty
+#  SECTION libs
+#  UPLOAD ppa:kralf/asl
+#  DEPENDS libboost-chrono-dev libudev-dev libusb-1.0-0-dev
+#    libpng12-dev qt5-default remake doxygen pkg-config
+#  PASS CMAKE_BUILD_TYPE LIBSEEKTHERMAL_GIT_REVISION
+#)
