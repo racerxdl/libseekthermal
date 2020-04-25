@@ -4,12 +4,13 @@ include(ReMake)
 
 remake_project(
   libseekthermal
-  VERSION 0.1
+  VERSION 0.2
   RELEASE beta
   SUMMARY "Driver library for Seek Thermal imaging devices."
   AUTHOR "Ralf Kaestner"
-  CONTACT "ralf.kaestner@gmail.com"
-  HOME "http://github.com/ethz-asl/libseekthermal"
+  AUTHOR "Oskar Roesler"
+  CONTACT "oskar.roesler@cjtrobotics.de"
+  HOME "http://github.com/cjtrobotics/libseekthermal"
   LICENSE "GNU Lesser General Public License (LGPL)"
   README README.md
   PREFIX seekthermal-
