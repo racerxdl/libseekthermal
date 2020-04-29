@@ -44,16 +44,16 @@ void signaled(int signal) {
 class FrameEvent:
   public QEvent {
 public:
-  FrameEvent(const Pointer<Frame>& frame) :
+  FrameEvent(const SeekThermal::Pointer<Frame>& frame) :
     QEvent(QEvent::User),
     frame(frame) {
   };
-  
-  const Pointer<Frame>& getFrame() const {
+
+  const SeekThermal::Pointer<Frame>& getFrame() const {
     return frame;
   }
 protected:
-  Pointer<Frame> frame;
+  SeekThermal::Pointer<Frame> frame;
 };
 
 class Window:
@@ -69,23 +69,23 @@ public:
     blur(false) {
     setCentralWidget(&label);
     setStatusBar(&statusBar);
-    
+
     centralWidget()->setAttribute(Qt::WA_TransparentForMouseEvents);
     setMouseTracking(true);
   }
-  
+
   void setCalibrationFrame(const Frame& calibrationFrame) {
     this->calibrationFrame = calibrationFrame;
   }
-  
+
   void setScale(double scale) {
     this->scale = scale;
   }
-  
+
   void setClose(bool close) {
     this->close = close;
   }
-  
+
   void setBlur(bool blur) {
     this->blur = blur;
   }
@@ -95,35 +95,35 @@ protected:
 
   Frame frame;
   Frame calibrationFrame;
-  Frame lastCalibrationFrame;  
+  Frame lastCalibrationFrame;
   size_t frameId;
-  
+
   Frame meanFrame;
   Frame varianceFrame;
-  
+
   double scale;
   bool close;
   bool blur;
-  
+
   void updateValue(const QPointF& position) {
     if (!frame.isEmpty()) {
       QPointF xy = position*1.0/scale;
-      
+
       size_t x = floor(xy.x());
       if (x >= frame.getWidth())
         x = frame.getWidth()-1;
-        
+
       size_t y = floor(xy.y());
       if (y >= frame.getHeight())
         y = frame.getHeight()-1;
-      
+
       std::stringstream stream;
       stream << "(" << x << ", " << y << "): " << frame(x, y);
-      
+
       statusBar.showMessage(stream.str().c_str());
     }
   }
-  
+
   bool event(QEvent* event) {
     if (event->type() == QEvent::User) {
       FrameEvent* frameEvent = (FrameEvent*)event;
@@ -131,11 +131,11 @@ protected:
       if (close && frameEvent->getFrame()->getType() == Frame::typeNormal) {
         double t = 1.0+frameId;
         Frame frame_t = *frameEvent->getFrame();
-      
+
         if (frameId) {
           meanFrame *= (t-1.0)/t;
           meanFrame += frame_t*(1.0/t);
-          
+
           varianceFrame *= (t-1.0)/t;
           frame_t -= meanFrame;
           frame_t *= frame_t;
@@ -146,45 +146,45 @@ protected:
           meanFrame = frame_t*(1.0/t);
           varianceFrame.resize(meanFrame.getWidth(), meanFrame.getHeight());
         }
-      
+
         ++frameId;
       }
-      
+
       if (frameEvent->getFrame()->getType() == Frame::typeNormal) {
         frame = *frameEvent->getFrame();
         size_t width = frame.getWidth();
         size_t height = frame.getHeight();
-        
+
         if (!calibrationFrame.isEmpty())
           frame -= calibrationFrame;
         else if (!lastCalibrationFrame.isEmpty())
           frame -= lastCalibrationFrame;
 
         float epsilon = std::numeric_limits<float>::epsilon();
-        
+
         if (!varianceFrame.isEmpty()) {
           for (size_t x = 0; x < width; ++x)
             for (size_t y = 0; y < height; ++y)
               if (varianceFrame(x, y) < epsilon)
                 frame.close(x, y);
         }
-        
+
         frame.normalize();
         if (blur)
           frame.gaussianBlur();
-        
+
         QImage image(width, height, QImage::Format_RGB888);
         for (size_t x = 0; x < width; ++x)
           for (size_t y = 0; y < height; ++y) {
           float value = frame(x, y)*255.0;
           image.setPixel(x, y, qRgb(value, value, value));
         }
-        
+
         label.setPixmap(QPixmap::fromImage(
           image.scaled(image.size()*scale)));
         setFixedSize(label.pixmap()->width(), label.pixmap()->height()+
           statusBar.height());
-        
+
         if (underMouse())
           updateValue(centralWidget()->mapFromGlobal(QCursor::pos()));
       }
@@ -194,7 +194,7 @@ protected:
     else
       QMainWindow::event(event);
   }
-  
+
   void mouseMoveEvent(QMouseEvent* event) {
     updateValue(centralWidget()->mapFromGlobal(event->globalPos()));
   }
@@ -208,20 +208,20 @@ public:
     device(device),
     interruptRequested(false) {
   }
-  
+
   void interrupt() {
     interruptRequested = true;
     wait();
   }
 protected:
   Pointer<Device> device;
-  
+
   bool interruptRequested;
-  
+
   void run() {
     while (!interruptRequested) {
       Pointer<Frame> frame = new Frame();
-      
+
       device->capture(*frame);
 
       if (parent()) {
@@ -257,7 +257,7 @@ int main(int argc, char **argv) {
     SeekThermal::Usb::Context context;
     Pointer<Interface> interface =
       context.getInterface(application[0].getValue());
-  
+
     Pointer<Device> device;
     if (application["device"].getValue().empty())
       device = interface->discoverDevice();
@@ -269,11 +269,11 @@ int main(int argc, char **argv) {
         application["timeout"].getValue<size_t>()*1e-3);
       device->setInterface(interface);
       device->connect();
-      
+
       device->initialize();
 
       signal(SIGINT, signaled);
-      
+
       QApplication qApplication(argc, argv);
       Window window;
       window.setScale(application["scale"].getValue<double>());
@@ -286,12 +286,12 @@ int main(int argc, char **argv) {
         calibrationFrame.load(application["calibration"].getValue());
         window.setCalibrationFrame(calibrationFrame);
       }
-          
+
       window.show();
       worker.start();
       qApplication.exec();
       worker.interrupt();
-      
+
       device->disconnect();
     }
     else {
