@@ -21,6 +21,7 @@
 #include <iostream>
 #include <csignal>
 #include <limits>
+#include <cmath>
 
 #include <QApplication>
 #include <QMainWindow>
